@@ -1,4 +1,4 @@
-from src.models import Apartment, Bill, Parameters, Tenant, TenantSettlement, Transfer, ApartmentSettlement
+from src.models import Apartment, Bill, Parameters, Tenant, TenantSettlement, Transfer, ApartmentSettlement, AnnualReport
 from typing import List, Tuple
 
 class Manager:
@@ -71,4 +71,27 @@ class Manager:
             )
         for tenant in tenants_in_apartment ] 
     
-    
+    def get_annual_report(self, year: int) -> AnnualReport:
+        total_costs = 0.0
+        total_revenues = 0.0
+        costs_by_apartment = {}
+        costs_by_type = {}
+
+        for bill in self.bills:
+            if bill.settlement_year == year:
+                total_costs += bill.amount_pln
+                costs_by_apartment[bill.apartment] = costs_by_apartment.get(bill.apartment, 0.0) + bill.amount_pln
+                costs_by_type[bill.type] = costs_by_type.get(bill.type, 0.0) + bill.amount_pln
+
+        for transfer in self.transfers:
+            if transfer.settlement_year == year:
+                total_revenues += transfer.amount_pln
+
+        return AnnualReport(
+            year=year,
+            total_costs_pln=total_costs,
+            total_revenues_pln=total_revenues,
+            balance_pln=total_revenues - total_costs,
+            costs_by_apartment=costs_by_apartment,
+            costs_by_type=costs_by_type,
+        )

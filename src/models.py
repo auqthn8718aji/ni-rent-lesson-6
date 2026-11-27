@@ -101,3 +101,11 @@ class TenantSettlement(BaseModel):
     total_due_pln: float
     total_transfers_pln: float = 0.0
     balance_pln: float = 0.0
+
+class AnnualReport(BaseModel):
+    year: int
+    total_costs_pln: float
+    total_revenues_pln: float
+    balance_pln: float
+    costs_by_apartment: Dict[str, float]
+    costs_by_type: Dict[str, float]
